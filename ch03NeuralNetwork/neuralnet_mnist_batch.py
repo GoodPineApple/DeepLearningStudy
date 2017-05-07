@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun May  7 19:50:30 2017
+Created on Sun May  7 20:07:55 2017
 
 @author: taemi
 """
@@ -41,11 +41,13 @@ def predict(network, x):
 
 x, t = get_data()
 network = init_network()
+
+batch_size = 100  # 배치크기 초기화
 accuracy_cnt = 0
-for i in range(len(x)):
-    y = predict(network, x[i])
-    p= np.argmax(y) # 확률이 가장 높은 원소의 인덱스를 얻는다.
-    if p == t[i]:
-        accuracy_cnt += 1
+for i in range(len(x)):  # range(start, end, step) start부터 end-1까지 step만큼 띄우면서 반복
+    x_batch = x[i:i+batch_size]    
+    y_batch = predict(network, x_batch)
+    p= np.argmax(y_batch, axis=1) # 확률이 가장 높은 numpy에서 가장 큰 인덱스를 얻는다.
+    accuracy_cnt += np.sum(p == t[i:i+batch_size])
 
 print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
